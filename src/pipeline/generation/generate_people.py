@@ -51,7 +51,7 @@ ROLES = [
     "Scrum Master",
 ]
 
-PROJECT_ROOT = Path(__file__).resolve().parents[4]
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 LANDING_DIR = PROJECT_ROOT / "historical_data" / "landing"
 DEFAULT_OUTPUT = LANDING_DIR / "people.csv"
 

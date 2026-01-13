@@ -24,7 +24,7 @@ from typing import Dict, Iterable, List, Tuple
 
 import snowflake.connector
 
-PROJECT_ROOT = Path(__file__).resolve().parents[4]
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 LANDING_DIR = PROJECT_ROOT / "historical_data" / "landing"
 DEFAULT_CSV = LANDING_DIR / "people.csv"
 

@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+
+dbt/target/
+dbt/dbt_packages/
+
+historical_data/landing/*
+!historical_data/landing/.gitkeep
+historical_data/processed/*
+!historical_data/processed/.gitkeep
+historical_data/failed/*
+!historical_data/failed/.gitkeep

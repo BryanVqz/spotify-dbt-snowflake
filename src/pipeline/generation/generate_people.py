@@ -4,7 +4,8 @@ Generate a CSV file with synthetic people data.
 
 Columns: ID, First Name, Last Name, Role, Age
 Defaults to 100 rows, but you can override with --rows.
-Outputs to historical_data/landing/people.csv by default.
+Outputs to historical_data/landing/people.csv by default. If S3_BUCKET is set,
+also uploads the CSV to s3://$S3_BUCKET/$S3_PREFIX (default prefix landing/).
 """
 
 import argparse
@@ -13,6 +14,7 @@ import random
 from pathlib import Path
 from typing import Optional
 
+from pipeline.utils.s3_upload import maybe_upload_from_env
 
 FIRST_NAMES = [
     "Alex",
@@ -114,6 +116,9 @@ def main() -> None:
     target_path = args.output if args.output else DEFAULT_OUTPUT
     written = write_people_csv(args.rows, target_path, seed=args.seed)
     print(f"Wrote {args.rows} rows to {written}")
+    uploaded = maybe_upload_from_env(written)
+    if uploaded:
+        print(f"Uploaded to {uploaded}")
 
 
 if __name__ == "__main__":

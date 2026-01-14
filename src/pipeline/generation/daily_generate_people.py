@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Generate a timestamped daily people CSV into historical_data/landing.
-
+If S3_BUCKET is set, upload the written file to s3://$S3_BUCKET/$S3_PREFIX.
 Default: 100 rows written to historical_data/landing/people_YYYYMMDD_HHMMSS.csv.
 """
 
@@ -9,6 +9,7 @@ import argparse
 from datetime import datetime
 
 from .generate_people import LANDING_DIR, write_people_csv
+from pipeline.utils.s3_upload import maybe_upload_from_env
 
 
 def parse_args() -> argparse.Namespace:
@@ -34,6 +35,9 @@ def main() -> None:
     output_path = LANDING_DIR / f"people_{timestamp}.csv"
     written = write_people_csv(args.rows, output_path, seed=args.seed)
     print(f"Daily file written: {written}")
+    uploaded = maybe_upload_from_env(written)
+    if uploaded:
+        print(f"Uploaded to {uploaded}")
 
 
 if __name__ == "__main__":

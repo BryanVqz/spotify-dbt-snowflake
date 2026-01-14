@@ -2,8 +2,8 @@ name: Generate synthetic data to S3
 
 on:
   schedule:
-    # Mondays at 16:00 UTC
-    - cron: "0 16 * * 1"
+    # Mondays at 16:00 UTC (+6hrs UTC vs GDL)
+    - cron: "0 16 * * *"
   workflow_dispatch:
 
 jobs:

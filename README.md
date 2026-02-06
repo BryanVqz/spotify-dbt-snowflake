@@ -10,14 +10,14 @@ Starter kit for Snowflake + dbt + AWS S3. Everything lives under a single repo w
 
 ## Quick start (per laptop)
 ```bash
-cd /Users/bryan.quezadavasquez/Library/CloudStorage/OneDrive-Slalom/Documents/development/dbt/spotify-pipeline
+cd /Users/bryan.quezadavasquez/Documents/development/spotify-pipeline
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
 ## Snowflake bootstrap (Snowsight)
-Open `src/snowflake/bootstrap.sql` in a Snowsight worksheet, replace the placeholder password, and run as `ACCOUNTADMIN`. It will create:
+Open `snowflake/bootstrap.sql` in a Snowsight worksheet, replace the placeholder password, and run as `ACCOUNTADMIN`. It will create:
 - Role: SPOTIFY_ROLE
 - Warehouse: SPOTIFY_WH
 - Database: SPOTIFY_ANALYTICS
@@ -70,4 +70,4 @@ terraform output pipeline_secret_access_key
 ## Environment summary
 - Python: root `.venv` only; activate before running dbt.
 - AWS: `AWS_PROFILE=spotify-admin` for Terraform; app creds come from Terraform outputs (`AWS_ACCESS_KEY_ID/SECRET/DEFAULT_REGION`, `S3_BUCKET/S3_PREFIX`).
-- Snowflake: env vars listed above; bootstrap via `src/snowflake_bootstrap.sql`.
+- Snowflake: env vars listed above; bootstrap via `snowflake/bootstrap.sql`.

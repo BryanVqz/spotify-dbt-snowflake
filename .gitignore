@@ -3,6 +3,12 @@ __pycache__/
 *.pyc
 .DS_Store
 .env
+.dbt/
+.user.yml
+dbt_packages/
+dbt_internal_packages/
+target/
+logs/
 .terraform/
 terraform.tfstate
 terraform.tfstate.*

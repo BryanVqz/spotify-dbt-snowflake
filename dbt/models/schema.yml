@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+    schema: "{{ env_var('SNOWFLAKE_SCHEMA', 'BRONZE') }}"
+    tables:
+      - name: streaming_history_raw
+
+models:
+  - name: stg_streaming_history
+    description: "Staging view for raw streaming history records."

@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: spotify       # Source system name
+    schema: bronze         # Schema containing the source tables
+    tables:
+      - name: listening_raw              # Table name used under dbt code
+        identifier: streaming_history_raw   # Table name as it exists in the database
+        description: "Raw JSON Spotify listening data from Snowflake"
+        # freshness: 
+        #   error_after: 
+        #     count: 10
+        #     period: day
+        #   warn_after:
+        #     count: 1
+        #     period: day
+        # loaded_at_field: S3_LAST_MODIFIED
+        
+        

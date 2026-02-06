@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: spotify
-    schema: bronze
+    schema: raw
     tables:
       - name: listening_raw
         identifier: listening_data_raw

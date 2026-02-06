@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: spotify
+    schema: bronze
+    tables:
+      - name: listening_raw
+        identifier: listening_data_raw
+        description: "Raw JSON Spotify listening data from Snowflake"
+        freshness:
+          error_after:
+            count: 10
+            period: day
+          warn_after:
+            count: 1
+            period: day
+        loaded_at_field: loaded_at_date

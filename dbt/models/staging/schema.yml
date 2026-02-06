@@ -1,8 +1,0 @@
-version: 2
-
-models:
-  - name: people_stub
-    description: "Placeholder model; replace with real Spotify dataset once available."
-    columns:
-      - name: id
-        tests: [not_null]

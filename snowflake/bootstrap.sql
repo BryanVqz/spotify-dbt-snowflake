@@ -16,6 +16,9 @@ create warehouse if not exists SPOTIFY_WH
 -- Create database and schema
 create database if not exists SPOTIFY_ANALYTICS;
 create schema if not exists SPOTIFY_ANALYTICS.BRONZE;
+create schema if not exists SPOTIFY_ANALYTICS.SILVER;
+create schema if not exists SPOTIFY_ANALYTICS.GOLD;
+create schema if not exists SPOTIFY_ANALYTICS.DBT_DEV;
 
 -- Create user (CHANGE PASSWORD!)
 create user if not exists SPOTIFY_USER
@@ -31,6 +34,17 @@ grant role SPOTIFY_ROLE to user SPOTIFY_USER;
 -- Grant permissions
 grant usage on warehouse SPOTIFY_WH to role SPOTIFY_ROLE;
 grant usage on database SPOTIFY_ANALYTICS to role SPOTIFY_ROLE;
+
 grant usage on schema SPOTIFY_ANALYTICS.BRONZE to role SPOTIFY_ROLE;
+grant usage on schema SPOTIFY_ANALYTICS.SILVER to role SPOTIFY_ROLE;
+grant usage on schema SPOTIFY_ANALYTICS.GOLD to role SPOTIFY_ROLE;
+grant usage on schema SPOTIFY_ANALYTICS.DBT_DEV to role SPOTIFY_ROLE;
+
 grant all privileges on schema SPOTIFY_ANALYTICS.BRONZE to role SPOTIFY_ROLE;
 grant all privileges on future tables in schema SPOTIFY_ANALYTICS.BRONZE to role SPOTIFY_ROLE;
+grant all privileges on schema SPOTIFY_ANALYTICS.SILVER to role SPOTIFY_ROLE;
+grant all privileges on future tables in schema SPOTIFY_ANALYTICS.SILVER to role SPOTIFY_ROLE;
+grant all privileges on schema SPOTIFY_ANALYTICS.GOLD to role SPOTIFY_ROLE;
+grant all privileges on future tables in schema SPOTIFY_ANALYTICS.GOLD to role SPOTIFY_ROLE;
+grant all privileges on schema SPOTIFY_ANALYTICS.DBT_DEV to role SPOTIFY_ROLE;
+grant all privileges on future tables in schema SPOTIFY_ANALYTICS.DBT_DEV to role SPOTIFY_ROLE;

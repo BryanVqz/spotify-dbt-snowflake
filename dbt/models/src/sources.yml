@@ -1,19 +1,14 @@
 version: 2
 
 sources:
-  - name: spotify       # Source system name
-    schema: bronze         # Schema containing the source tables
+  - name: spotify       # Source system name -> this will be used on ENTIRE project
+    schema: bronze      # Schema containing the source tables
     tables:
       - name: listening_raw              # Table name used under dbt code
         identifier: streaming_history_raw   # Table name as it exists in the database
         description: "Raw JSON Spotify listening data from Snowflake"
-        # freshness: 
-        #   error_after: 
-        #     count: 10
-        #     period: day
-        #   warn_after:
-        #     count: 1
-        #     period: day
-        # loaded_at_field: S3_LAST_MODIFIED
-        
-        
+        config:
+          freshness: # changed to config in v1.9
+            warn_after: {count: 12, period: hour} # Warn if no new data in 12 hours
+            error_after: {count: 48, period: hour} # Error if no new data in 24 hours
+          loaded_at_field: s3_last_modified  # Column that tracks when data was loaded

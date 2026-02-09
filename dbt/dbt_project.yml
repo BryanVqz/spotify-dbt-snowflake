@@ -36,3 +36,6 @@ models:
     fact:
       +materialized: table
       +schema: gold
+    mart:
+      +materialized: view
+      +schema: gold

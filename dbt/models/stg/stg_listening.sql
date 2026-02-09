@@ -1,10 +1,3 @@
-{{
-    config(
-        materialized='view'
-        ,schema='bronze'
-    )
-}}
-
 WITH raw_spotify_data AS (
     SELECT
     USER_ID

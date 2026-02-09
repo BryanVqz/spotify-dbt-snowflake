@@ -42,7 +42,7 @@ models:
       +tags: ['dimensional','dim']
     fct:
       +materialized: table
-      +tags: ['fact',fct]
+      +tags: ['fact','fct']
     mart:
       +materialized: table
       +tags: ['mart','semantical']

@@ -33,3 +33,6 @@ models:
     dim:
       +materialized: table
       +schema: gold
+    fact:
+      +materialized: table
+      +schema: gold

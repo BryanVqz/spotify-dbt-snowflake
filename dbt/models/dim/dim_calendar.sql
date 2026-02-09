@@ -1,7 +1,26 @@
-WITH calendar AS (
+{% set start_date = '2015-01-01' %}
+{% set years_future = 2 %}
+
+WITH date_params AS (
   SELECT
-    DATEADD(day, SEQ4(), '2015-01-01'::DATE)::DATE AS calendar_date
-  FROM TABLE(GENERATOR(rowcount => 5475))  -- 15 years
+    '{{ start_date }}'::DATE AS start_date,
+    DATEADD(year, {{ years_future }}, CURRENT_DATE())::DATE AS end_date
+),
+
+date_range AS (
+  SELECT
+    start_date,
+    end_date,
+    DATEDIFF(day, start_date, end_date) + 1 AS total_days
+  FROM date_params
+),
+
+calendar AS (
+  SELECT
+    DATEADD(day, SEQ4(), dr.start_date)::DATE AS calendar_date
+  FROM TABLE(GENERATOR(rowcount => 10000)),  -- Max possible, filtered below
+       date_range dr
+  WHERE SEQ4() < dr.total_days
 )
 
 SELECT
@@ -16,13 +35,12 @@ SELECT
   EXTRACT(QUARTER FROM calendar_date) AS quarter,
   
   -- Formatted strings
-  TO_CHAR(calendar_date, 'MMM YYYY') AS month_year,  -- "Feb 2024"
-  TO_CHAR(calendar_date, 'MMMM') AS month_name,      -- "February"
-  TO_CHAR(calendar_date, 'DY') AS day_name,          -- "Fri"
+  TO_CHAR(calendar_date, 'MMMM YYYY') AS month_year,
+  TO_CHAR(calendar_date, 'MMMM') AS month_name,
+  TO_CHAR(calendar_date, 'DY') AS day_name,
   
   -- Useful flags
   CASE WHEN DAYOFWEEK(calendar_date) IN (0, 6) THEN TRUE ELSE FALSE END AS is_weekend,
-  CASE WHEN calendar_date <= CURRENT_DATE() THEN TRUE ELSE FALSE END AS is_past,
   
   -- Week/Year helpers
   WEEKOFYEAR(calendar_date) AS week_of_year,
@@ -32,5 +50,4 @@ SELECT
   CURRENT_TIMESTAMP() AS meta_loaded_at
 
 FROM calendar
-WHERE calendar_date <= DATEADD(year, 2, CURRENT_DATE())
 ORDER BY calendar_date

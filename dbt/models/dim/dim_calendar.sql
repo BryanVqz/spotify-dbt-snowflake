@@ -1,4 +1,4 @@
-{% set start_date = '2015-01-01' %}
+{% set start_date = '2010-01-01' %}
 {% set years_future = 2 %}
 
 WITH date_params AS (
@@ -47,7 +47,7 @@ SELECT
   DAYOFYEAR(calendar_date) AS day_of_year,
 
   -- Metadata
-  CURRENT_TIMESTAMP() AS meta_loaded_at
+  CURRENT_TIMESTAMP() AS meta_last_modified
 
 FROM calendar
 ORDER BY calendar_date

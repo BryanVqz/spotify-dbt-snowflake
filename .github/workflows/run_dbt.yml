@@ -2,32 +2,78 @@ name: run dbt
 
 on:
   schedule:
-    - cron: "0 6 * * *"
-  workflow_dispatch:
+    - cron: "0 6 * * *"  # Daily at 6 AM UTC
+  workflow_dispatch:  # Manual trigger
+  push:
+    branches:
+      - main  # Run on push to main
 
 jobs:
   dbt:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
       - name: Install dbt
-        run: pip install dbt-snowflake
-
-      - name: Run dbt
-        working-directory: dbt
-        env:
-          DBT_SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-          DBT_SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
-          DBT_SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
-          DBT_SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
-          DBT_SNOWFLAKE_DATABASE: spotify_analytics
-          DBT_SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
         run: |
-          dbt deps
-          dbt build --target prod
+          pip install dbt-snowflake==1.8.0
+          dbt --version
+
+      - name: Create dbt profiles directory
+        run: mkdir -p ~/.dbt
+
+      - name: Create profiles.yml
+        run: |
+          cat > ~/.dbt/profiles.yml << EOF
+          default:
+            target: prod
+            outputs:
+              prod:
+                type: snowflake
+                account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+                user: ${{ secrets.SNOWFLAKE_USER }}
+                password: ${{ secrets.SNOWFLAKE_PASSWORD }}
+                role: ${{ secrets.SNOWFLAKE_ROLE }}
+                database: SPOTIFY_ANALYTICS
+                warehouse: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+                schema: bronze
+                threads: 4
+                client_session_keep_alive: False
+          EOF
+
+      - name: Debug - Check profiles.yml
+        run: |
+          echo "Checking profiles.yml exists..."
+          ls -la ~/.dbt/
+          echo "Profile content (masked):"
+          cat ~/.dbt/profiles.yml | grep -v password
+
+      - name: Run dbt deps
+        working-directory: dbt
+        run: dbt deps
+
+      - name: Run dbt debug
+        working-directory: dbt
+        run: dbt debug
+
+      - name: Run dbt build
+        working-directory: dbt
+        run: dbt build --target prod
+
+      - name: Upload dbt artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-artifacts
+          path: |
+            dbt/target/manifest.json
+            dbt/target/run_results.json
+            dbt/logs/dbt.log
+          retention-days: 30

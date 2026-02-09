@@ -1,6 +1,7 @@
 {{
     config(
         materialized='view'
+        ,schema='bronze'
     )
 }}
 

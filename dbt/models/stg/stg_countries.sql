@@ -1,3 +1,10 @@
+{{
+    config(
+        materialized='view'
+        ,schema='silver'
+    )
+}}
+
 WITH country_data AS (
     SELECT DISTINCT
         country

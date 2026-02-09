@@ -37,20 +37,15 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   spotify_project:
-    # Bronze layer
-    bronze:
-      +schema: bronze
-      +materialized: view
-      +tags: ['bronze', 'staging']
-    
-    # Silver layer
-    silver:
-      +schema: silver
+    dim:
       +materialized: table
-      +tags: ['silver']
-    
-    # Gold layer
-    gold:
-      +schema: gold
+      +tags: ['dimensional','dim']
+    fct:
       +materialized: table
-      +tags: ['gold', 'marts']
+      +tags: ['fact',fct]
+    mart:
+      +materialized: table
+      +tags: ['mart','semantical']
+    stg:
+      +materialized: ephemeral
+      +tags: ['staging','stg']

@@ -2,7 +2,8 @@ name: run dbt
 
 on:
   schedule:
-    - cron: "0 6 * * *"  # Daily at 6 AM UTC
+    # Daily at 12:00 PM GDL/UTC
+    - cron: "0 18 * * *"
   workflow_dispatch:
   push:
     branches:

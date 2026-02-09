@@ -37,15 +37,12 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   spotify_project:
+    # Applies to all files under models/example/
     dim:
       +materialized: table
-      +tags: ['dimensional','dim']
     fct:
       +materialized: table
-      +tags: ['fact','fct']
     mart:
       +materialized: table
-      +tags: ['mart','semantical']
     stg:
       +materialized: ephemeral
-      +tags: ['staging','stg']

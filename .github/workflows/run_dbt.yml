@@ -11,6 +11,9 @@ on:
 jobs:
   dbt:
     runs-on: ubuntu-latest
+    env:
+      DBT_PROFILES_DIR: /home/runner/.dbt
+      DBT_PROJECT_DIR: dbt
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,11 +30,11 @@ jobs:
           dbt --version
 
       - name: Create dbt profiles directory
-        run: mkdir -p ~/.dbt
+        run: mkdir -p "$DBT_PROFILES_DIR"
 
       - name: Create profiles.yml
         run: |
-          cat > ~/.dbt/profiles.yml << 'YML'
+          cat > "$DBT_PROFILES_DIR/profiles.yml" << 'YML'
           default:
             target: prod
             outputs:
@@ -41,36 +44,15 @@ jobs:
                 user: ${{ secrets.SNOWFLAKE_USER }}
                 password: ${{ secrets.SNOWFLAKE_PASSWORD }}
                 role: ${{ secrets.SNOWFLAKE_ROLE }}
-                database: SPOTIFY_ANALYTICS
+                database: ${{ secrets.SNOWFLAKE_DATABASE }}
                 warehouse: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
-                schema: bronze
+                schema: ${{ secrets.SNOWFLAKE_SCHEMA }}
                 threads: 4
                 client_session_keep_alive: false
           YML
 
-      - name: Debug - Check profiles.yml
-        run: |
-          echo "Checking profiles.yml exists..."
-          ls -la ~/.dbt/
-          echo "Profile content (masked):"
-          grep -v password ~/.dbt/profiles.yml
-
       - name: Run dbt deps
-        run: dbt deps --project-dir dbt --profiles-dir ~/.dbt
-
-      - name: Run dbt debug
-        run: dbt debug --project-dir dbt --profiles-dir ~/.dbt
+        run: dbt deps --project-dir "$DBT_PROJECT_DIR" --profiles-dir "$DBT_PROFILES_DIR"
 
       - name: Run dbt build
-        run: dbt build --project-dir dbt --profiles-dir ~/.dbt --target prod
-
-      - name: Upload dbt artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: dbt-artifacts
-          path: |
-            dbt/target/manifest.json
-            dbt/target/run_results.json
-            dbt/logs/dbt.log
-          retention-days: 30
+        run: dbt build --project-dir "$DBT_PROJECT_DIR" --profiles-dir "$DBT_PROFILES_DIR" --target prod

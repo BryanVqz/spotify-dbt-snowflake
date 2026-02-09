@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: dim_calendar
+    description: "Calendar dimension generated from stg_listening timestamps."
+    columns:
+      - name: date_key
+        description: "Surrogate date key in YYYYMMDD format."
+        tests:
+          - not_null
+          - unique
+      - name: calendar_date
+        description: "Calendar date (date)."
+        tests:
+          - not_null
+      - name: year
+      - name: month
+      - name: year_month
+      - name: day_of_month
+      - name: quarter
+      - name: month_name
+      - name: day_name
+      - name: day_of_week

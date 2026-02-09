@@ -37,4 +37,4 @@ SELECT *
 --     ,CASE WHEN offline IS NULL THEN 'false' ELSE offline END                             AS offline_flag
 --     ,CASE WHEN incognito_mode IS NULL THEN 'false' ELSE incognito_mode END               AS incognito_flag
 FROM raw_spotify_data
-WHERE listening_timestamp IS NOT NULL
+WHERE track_uri IS NOT NULL

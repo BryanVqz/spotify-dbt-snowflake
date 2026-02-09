@@ -3,3 +3,4 @@ WITH streaming_history as (
 )
 
 SELECT * FROM streaming_history
+WHERE ARTIST_NAME IS NULL

@@ -1,24 +1,36 @@
--- Simple Snowflake calendar: last 10 years through today.
-with calendar as (
-  select
-    dateadd(
-      day,
-      seq4(),
-      dateadd(day, -3650, current_date())
-    )::date as calendar_date
-  from table(generator(rowcount => 3651))
+WITH calendar AS (
+  SELECT
+    DATEADD(day, SEQ4(), '2015-01-01'::DATE)::DATE AS calendar_date
+  FROM TABLE(GENERATOR(rowcount => 5475))  -- 15 years
 )
-select
-  to_number(to_char(calendar_date, 'YYYYMMDD')) as date_key,
+
+SELECT
+  -- Keys
+  TO_NUMBER(TO_CHAR(calendar_date, 'YYYYMMDD')) AS date_key,
   calendar_date,
-  extract(year from calendar_date) as year,
-  extract(month from calendar_date) as month,
-  to_char(calendar_date, 'YYYY-MM') as year_month,
-  extract(day from calendar_date) as day_of_month,
-  extract(quarter from calendar_date) as quarter,
-  trim(to_char(calendar_date, 'Month')) as month_name,
-  trim(to_char(calendar_date, 'Day')) as day_name,
-  extract(dow from calendar_date) as day_of_week
-from calendar
-where calendar_date <= current_date()
-order by calendar_date
+  
+  -- Basic date parts
+  EXTRACT(YEAR FROM calendar_date) AS year,
+  EXTRACT(MONTH FROM calendar_date) AS month,
+  EXTRACT(DAY FROM calendar_date) AS day,
+  EXTRACT(QUARTER FROM calendar_date) AS quarter,
+  
+  -- Formatted strings
+  TO_CHAR(calendar_date, 'MMM YYYY') AS month_year,  -- "Feb 2024"
+  TO_CHAR(calendar_date, 'MMMM') AS month_name,      -- "February"
+  TO_CHAR(calendar_date, 'DY') AS day_name,          -- "Fri"
+  
+  -- Useful flags
+  CASE WHEN DAYOFWEEK(calendar_date) IN (0, 6) THEN TRUE ELSE FALSE END AS is_weekend,
+  CASE WHEN calendar_date <= CURRENT_DATE() THEN TRUE ELSE FALSE END AS is_past,
+  
+  -- Week/Year helpers
+  WEEKOFYEAR(calendar_date) AS week_of_year,
+  DAYOFYEAR(calendar_date) AS day_of_year,
+
+  -- Metadata
+  CURRENT_TIMESTAMP() AS meta_loaded_at
+
+FROM calendar
+WHERE calendar_date <= DATEADD(year, 2, CURRENT_DATE())
+ORDER BY calendar_date

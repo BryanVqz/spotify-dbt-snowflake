@@ -1,9 +1,8 @@
 WITH country_data AS (
   SELECT * FROM {{ ref('stg_countries') }}
-)
-
-,country_detailed AS (
-    SELECT * FROM {{ ref('seed_countries') }}
+),
+country_detailed AS (
+  SELECT * FROM {{ ref('seed_countries') }}
 )
 
 SELECT

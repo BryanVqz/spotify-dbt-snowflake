@@ -3,15 +3,14 @@ name: run dbt
 on:
   schedule:
     - cron: "0 6 * * *"  # Daily at 6 AM UTC
-  workflow_dispatch:  # Manual trigger
+  workflow_dispatch:
   push:
     branches:
-      - main  # Run on push to main
+      - main
 
 jobs:
   dbt:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,7 +22,8 @@ jobs:
 
       - name: Install dbt
         run: |
-          pip install dbt-snowflake==1.8.0
+          python -m pip install --upgrade pip
+          python -m pip install dbt-core==1.8.0 dbt-snowflake==1.8.0
           dbt --version
 
       - name: Create dbt profiles directory
@@ -31,7 +31,7 @@ jobs:
 
       - name: Create profiles.yml
         run: |
-          cat > ~/.dbt/profiles.yml << EOF
+          cat > ~/.dbt/profiles.yml << 'YML'
           default:
             target: prod
             outputs:
@@ -45,27 +45,24 @@ jobs:
                 warehouse: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
                 schema: bronze
                 threads: 4
-                client_session_keep_alive: False
-          EOF
+                client_session_keep_alive: false
+          YML
 
       - name: Debug - Check profiles.yml
         run: |
           echo "Checking profiles.yml exists..."
           ls -la ~/.dbt/
           echo "Profile content (masked):"
-          cat ~/.dbt/profiles.yml | grep -v password
+          grep -v password ~/.dbt/profiles.yml
 
       - name: Run dbt deps
-        working-directory: dbt
-        run: dbt deps
+        run: dbt deps --project-dir dbt --profiles-dir ~/.dbt
 
       - name: Run dbt debug
-        working-directory: dbt
-        run: dbt debug
+        run: dbt debug --project-dir dbt --profiles-dir ~/.dbt
 
       - name: Run dbt build
-        working-directory: dbt
-        run: dbt build --target prod
+        run: dbt build --project-dir dbt --profiles-dir ~/.dbt --target prod
 
       - name: Upload dbt artifacts
         if: always()

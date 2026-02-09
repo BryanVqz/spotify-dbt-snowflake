@@ -1,6 +1,7 @@
 WITH raw_spotify_data AS (
     SELECT
     USER_ID
+    ,raw:ts::date                                      AS listening_date
     ,raw:conn_country::string                          AS country
     ,raw:master_metadata_album_album_name::string      AS album_name
     ,raw:master_metadata_album_artist_name::string     AS artist_name

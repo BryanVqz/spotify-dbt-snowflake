@@ -1,27 +1,29 @@
-WITH streaming_history as (
-    select * from {{ ref('fact_listening_history') }}
+WITH streaming_history AS (
+    SELECT 
+        *,
+        MIN(listening_timestamp) OVER (
+            PARTITION BY user_id, artist_name, album_name, track_name
+        ) AS first_ever_played
+    FROM {{ ref('fact_listening_history') }}
+    WHERE user_id = 0001
 )
 
-SELECT
-user_id
-,artist_name
-,album_name
-,track_name
-
-,count(track_name)
-,date(min(listening_timestamp))
-,date(max(listening_timestamp))
-
-,(select date(max(listening_timestamp)) from streaming_history WHERE USER_ID = 0001)
+SELECT 
+    user_id,
+    artist_name,
+    album_name,
+    track_name,
+    COUNT(*) AS play_count_2025,
+    DATE(MIN(first_ever_played)) AS first_played_date,  -- First time EVER
+    DATE(MAX(listening_timestamp)) AS last_played_date_2025,
+    (SELECT DATE(MAX(listening_timestamp)) 
+     FROM {{ ref('fact_listening_history') }}
+     WHERE user_id = 0001) AS latest_listening_date
 FROM streaming_history
-WHERE USER_ID = 0001
---AND DATE(listening_timestamp) BETWEEN '2024-01-01' AND '2024-12-31'
-AND YEAR(listening_timestamp) = 2025
+WHERE YEAR(listening_timestamp) = 2025
 GROUP BY 
-user_id
-,artist_name
-,album_name
-,track_name
---,date(listening_timestamp)
-
-ORDER BY 5 DESC
+    user_id,
+    artist_name,
+    album_name,
+    track_name
+ORDER BY play_count_2025 DESC

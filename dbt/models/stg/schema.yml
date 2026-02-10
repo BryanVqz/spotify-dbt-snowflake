@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: stg_listening
+    description: "Staged listening events from raw Spotify data."
+    columns:
+      - name: listening_timestamp
+        description: "Timestamp when listening event occurred."
+        tests:
+          - not_null
+      - name: track_uri
+        description: "Spotify track URI."
+      - name: user_id
+        description: "User identifier from source."
+  - name: stg_devices
+    description: "Distinct device platforms derived from listening data."
+    columns:
+      - name: device_id
+        tests:
+          - not_null
+          - unique
+      - name: platform
+  - name: stg_tracks
+    description: "Distinct tracks derived from listening data."
+    columns:
+      - name: track_id
+        tests:
+          - not_null
+          - unique
+      - name: track_uri
+  - name: stg_users
+    description: "Distinct users derived from listening data."
+    columns:
+      - name: user_id_key
+        tests:
+          - not_null
+          - unique
+      - name: user_id

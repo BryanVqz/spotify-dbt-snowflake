@@ -1,0 +1,13 @@
+version: 2
+
+seeds:
+  - name: seed_countries
+    description: "Reference list of countries with names."
+    columns:
+      - name: country
+        description: "Country code."
+        tests:
+          - not_null
+          - unique
+      - name: name
+        description: "Country name."

@@ -21,3 +21,54 @@ models:
       - name: month_name
       - name: day_name
       - name: day_of_week
+  - name: dim_countries
+    description: "Country dimension derived from listening data."
+    columns:
+      - name: country_id
+        description: "Surrogate key for country."
+        tests:
+          - not_null
+          - unique
+      - name: country
+        description: "Country code from source data."
+        tests:
+          - not_null
+  - name: dim_devices
+    description: "Device/platform dimension derived from listening data."
+    columns:
+      - name: device_id
+        description: "Surrogate key for device platform."
+        tests:
+          - not_null
+          - unique
+      - name: platform
+        description: "Platform name from source data."
+        tests:
+          - not_null
+  - name: dim_tracks
+    description: "Track dimension derived from listening data."
+    columns:
+      - name: track_id
+        description: "Surrogate key for track."
+        tests:
+          - not_null
+          - unique
+      - name: track_uri
+        description: "Spotify track URI."
+        tests:
+          - not_null
+      - name: track_name
+      - name: artist_name
+      - name: album_name
+  - name: dim_users
+    description: "User dimension derived from listening data."
+    columns:
+      - name: user_id_key
+        description: "Surrogate key for user."
+        tests:
+          - not_null
+          - unique
+      - name: user_id
+        description: "Source user identifier."
+        tests:
+          - not_null

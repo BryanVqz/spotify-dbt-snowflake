@@ -1,11 +1,16 @@
 WITH streaming_history AS (
     SELECT 
-        *,
+        user_id,
+        artist_name,
+        album_name,
+        track_name,
+        ms_played,
+        listening_timestamp,
         MIN(listening_timestamp) OVER (
             PARTITION BY user_id, artist_name, album_name, track_name
         ) AS first_ever_played
-    FROM {{ ref('fact_listening_history') }}
-    WHERE user_id = 0001
+    FROM {{ ref('stg_listening') }}
+    WHERE user_id = '0001'
 )
 
 SELECT 
@@ -25,9 +30,9 @@ SELECT
     -- Dates
     DATE(MIN(listening_timestamp)) AS first_played_date_2025,
     DATE(MAX(listening_timestamp)) AS last_played_date_2025,
-    (SELECT DATE(MAX(listening_timestamp)) 
+    (SELECT DATE(MAX(listening_timestamp))
      FROM streaming_history
-     WHERE user_id = 0001) AS latest_snapshot_date
+     WHERE user_id = '0001') AS latest_snapshot_date
 FROM streaming_history
 WHERE YEAR(listening_timestamp) = 2025
 GROUP BY 

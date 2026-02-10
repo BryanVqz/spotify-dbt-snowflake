@@ -7,6 +7,17 @@ sources:
       - name: listening_raw              # Table name used under dbt code
         identifier: streaming_history_raw   # Table name as it exists in the database
         description: "Raw JSON Spotify listening data from Snowflake"
+        columns:
+          - name: user_id
+            description: "User identifier from source."
+          - name: raw
+            description: "Raw JSON payload for a listening event."
+          - name: file_name
+            description: "Source file name in S3."
+          - name: s3_last_modified
+            description: "Timestamp when the file was last modified in S3."
+            tests:
+              - not_null
         config:
           freshness: # changed to config in v1.9
             warn_after: {count: 12, period: hour} # Warn if no new data in 12 hours

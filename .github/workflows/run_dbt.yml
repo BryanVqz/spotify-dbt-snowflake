@@ -4,9 +4,6 @@ on:
   workflow_run:
     workflows: ["Load S3 landing files to Snowflake"]
     types: [completed]
-  schedule:
-    # Daily at 12:00 PM GDL/UTC
-    - cron: "0 18 * * *"
   workflow_dispatch:
   push:
     branches:

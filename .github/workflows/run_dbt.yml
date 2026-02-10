@@ -1,6 +1,9 @@
 name: run dbt
 
 on:
+  workflow_run:
+    workflows: ["Load S3 landing files to Snowflake"]
+    types: [completed]
   schedule:
     # Daily at 12:00 PM GDL/UTC
     - cron: "0 18 * * *"
@@ -11,6 +14,7 @@ on:
 
 jobs:
   dbt:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     env:
       DBT_PROFILES_DIR: /home/runner/.dbt

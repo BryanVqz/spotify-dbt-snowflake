@@ -1,6 +1,9 @@
 name: Load S3 landing files to Snowflake
 
 on:
+  workflow_run:
+    workflows: ["Generate synthetic data to S3"]
+    types: [completed]
   schedule:
     # Daily at 11:00 AM GDL/UTC
     - cron: "0 17 * * *"
@@ -8,6 +11,7 @@ on:
 
 jobs:
   load:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

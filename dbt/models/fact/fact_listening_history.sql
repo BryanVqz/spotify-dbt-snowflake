@@ -11,7 +11,9 @@ with base as (
     shuffle_flag,
     skipped_flag,
     offline_flag,
-    incognito_flag
+    incognito_flag,
+    meta_file_name,
+    meta_last_modified
   from {{ ref('stg_listening') }}
 ),
 track_dim as (
@@ -42,7 +44,9 @@ select
   b.shuffle_flag,
   b.skipped_flag,
   b.offline_flag,
-  b.incognito_flag
+  b.incognito_flag,
+  b.meta_file_name,
+  b.meta_last_modified
 from base b
 left join track_dim t
   on b.track_uri = t.track_uri

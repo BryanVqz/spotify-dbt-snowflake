@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: fact_listening_history
+    description: "Listening fact table with dimension keys and measures."
+    columns:
+      - name: date_key
+        tests:
+          - not_null
+      - name: track_id
+        tests:
+          - not_null
+      - name: device_id
+        tests:
+          - not_null
+      - name: country_id
+        tests:
+          - not_null
+      - name: user_id_key
+        tests:
+          - not_null
+      - name: listening_timestamp
+        tests:
+          - not_null
+      - name: total_ms_played
+        tests:
+          - not_null

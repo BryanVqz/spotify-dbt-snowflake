@@ -1,10 +1,3 @@
-{{ 
-    config(
-        materialized = 'table',
-        tags = ['dimension', 'core', 'static']
-    ) 
-}}
-
 WITH date_params AS (
   SELECT
     '2010-01-01'::DATE AS start_date,

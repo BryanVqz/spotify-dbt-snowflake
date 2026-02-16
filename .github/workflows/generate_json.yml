@@ -24,4 +24,4 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
           S3_PREFIX: ${{ secrets.S3_PREFIX }}
-        run: python src/generate_csv.py --rows 150
+        run: python src/generate_json.py --rows 150
